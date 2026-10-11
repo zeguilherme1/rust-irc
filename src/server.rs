@@ -7,17 +7,18 @@ fn handle_stream(mut stream: TcpStream) {
     loop {
         match stream.read(&mut buffer) {
             Ok(0) => {
-                println!("Client disconnected!");
+                let addr = stream.peer_addr().unwrap();
+                println!("Client {} disconnected!", addr);
                 break;
             }
             Ok(n) => {
-                println!("Received {}", String::from_utf8_lossy(&buffer[..n])); 
+                println!("{}", String::from_utf8_lossy(&buffer[..n])); 
                 stream.write_all(&buffer[..n]).unwrap();
                 buffer = [0; 512];
             }
             Err(e) => {
-            println!("Error: {}", e);
-            break;
+                println!("Error: {}", e);
+                break;
             }
         }
     }
